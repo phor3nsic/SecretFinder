@@ -282,7 +282,7 @@ def html_save(output):
     finally:
         os.dup2(hide,1)
 
-def json_output(matched):
+def json_output(matched, url):
     ''' json output '''
     for match in matched:
         data = {
@@ -292,12 +292,12 @@ def json_output(matched):
                 "severity":"low"
             },
             "type":"http",
-            "host":"",
+            "host":url,
             "curl-command":""
 
         }
         data['info']['name'] = match.get('name')
-        data['curl-command'] = match.get('matched').encode('ascii','ignore').decode('utf-8')
+        data['curl-command'] = url+ "/#"+match.get('matched').encode('ascii','ignore').decode('utf-8')
         print(json.dumps(data))
 
 def cli_output(matched):
@@ -457,7 +457,7 @@ if __name__ == "__main__":
         if args.output == 'cli':
             cli_output(matched)
         if args.output == 'json':
-            json_output(matched)
+            json_output(matched, url)
         else:
             output += '<h1>File: <a href="%s" target="_blank" rel="nofollow noopener noreferrer">%s</a></h1>'%(escape(url),escape(url))
             for match in matched:
