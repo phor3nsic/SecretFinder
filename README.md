@@ -24,7 +24,7 @@ optional arguments:
                         Input a: URL, file or folder
   -o OUTPUT, --output OUTPUT
                         Where to save the file, including file name. Default:
-                        output.html
+                        output.html (Options: cli, json, file.html)
   -r REGEX, --regex REGEX
                         RegEx for filtering purposes against found endpoint
                         (e.g: ^/api/)
@@ -63,6 +63,10 @@ $ python3 SecretFinder.py
 - CLI/STDOUT output (doesn't use jsbeautifier, which makes it very fast):
 
 `python3 SecretFinder.py -i https://example.com/1.js -o cli`
+
+- JSON/STDOUT output (doesn't use jsbeautifier, which makes it very fast):
+
+`python3 SecretFinder.py -i https://example.com/1.js -o json`
 
 - Analyzing an entire domain and its JS files:
 

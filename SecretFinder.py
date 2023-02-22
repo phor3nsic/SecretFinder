@@ -23,6 +23,7 @@ import random
 from html import escape
 import urllib3
 import xml.etree.ElementTree
+import json
 
 # disable warning
 
@@ -281,6 +282,24 @@ def html_save(output):
     finally:
         os.dup2(hide,1)
 
+def json_output(matched):
+    ''' json output '''
+    for match in matched:
+        data = {
+            "template-id":"secretfinder",
+            "info":{
+                "name":"",
+                "severity":"low"
+            },
+            "type":"http",
+            "host":"",
+            "curl-command":""
+
+        }
+        data['info']['name'] = match.get('name')
+        data['curl-command'] = match.get('matched').encode('ascii','ignore').decode('utf-8')
+        print(json.dumps(data))
+
 def cli_output(matched):
     ''' cli output '''
     for match in matched:
@@ -403,6 +422,9 @@ if __name__ == "__main__":
     mode = 1
     if args.output == "cli":
         mode = 0
+    if args.output == "json":
+        mode = 0
+
     # add args
     if args.regex:
         # validate regular exp
@@ -425,7 +447,6 @@ if __name__ == "__main__":
     # conver URLs to js file
     output = ''
     for url in urls:
-        print('[ + ] URL: '+url)
         if not args.burp:
             file = send_request(url)
         else:
@@ -435,6 +456,8 @@ if __name__ == "__main__":
         matched = parser_file(file,mode)
         if args.output == 'cli':
             cli_output(matched)
+        if args.output == 'json':
+            json_output(matched)
         else:
             output += '<h1>File: <a href="%s" target="_blank" rel="nofollow noopener noreferrer">%s</a></h1>'%(escape(url),escape(url))
             for match in matched:
@@ -460,5 +483,6 @@ if __name__ == "__main__":
                         '<span style="background-color:yellow">%s</span>'%(match.get('context') if len(match.get('context'))>1 else match.get('context'))
                     )
                 output += header + body
-    if args.output != 'cli':
-        html_save(output)
+            html_save(output)
+
+        
